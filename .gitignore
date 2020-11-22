@@ -1,0 +1,11 @@
+**/*.iml
+**/.*
+!/.gitignore
+/gradlew
+/gradlew.bat
+gradle/
+/common/build/
+/server-core/build/
+/server-ui/build/
+/tracker-core/build/
+/tracker-ui/build/
