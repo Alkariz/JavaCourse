@@ -26,7 +26,10 @@ public class GPSService {
     public boolean haveData () {
         return !localQueue.isEmpty();
     }
+
+    // Локальная переменная для обозначения текущей использованной точки
     private int count;
+    // Текущая строка в самом файле-ресурсе
     private int current;
 
     @Scheduled(cron = "${cron.getData}")

@@ -16,6 +16,7 @@ public class StoreGPSDataService {
     private static final BlockingDeque<String> allDataQueue =  new LinkedBlockingDeque<>(100);
     private static final List<String> allData = new ArrayList<>();
 
+    // Локальная переменная для обозначения текущей использованной точки
     private int count;
 
     /**
