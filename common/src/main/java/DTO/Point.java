@@ -52,6 +52,8 @@ public class Point {
         return mapper.writeValueAsString(this);
     }
 
+//    public
+
     // Получить точку из узла XML
     public void EncodeFromXML(Node elem) throws ParseException {
         this.setLat(Double.valueOf(elem.getAttributes().getNamedItem("lat").getNodeValue()));
@@ -60,10 +62,6 @@ public class Point {
             Node node = elem.getChildNodes().item(i);
             if (node.getNodeName()=="time") {
                 String s = node.getTextContent();
-
-//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-//                LocalDateTime dateTime = LocalDateTime.parse(s, formatter);
-//                this.setTime(dateTime.getLong());
 
                 SimpleDateFormat format = new SimpleDateFormat();
                 format.applyPattern("yyyy-MM-dd'T'HH:mm:ss");
@@ -74,18 +72,6 @@ public class Point {
                 this.setEle(Double.valueOf(node.getTextContent()));
             }
         }
-//        Node node = elem.getChildNodes().ElementsByTagName("time").item(0);
-//        if ((node!=null) && (node.getNodeName()=="time")) {
-//            String s = node.toString();
-//            SimpleDateFormat format = new SimpleDateFormat();
-//            format. applyPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-//            Date docDate= format.parse(s);
-//            this.setTime(docDate.getTime());
-//        }
-//        node = elem.getElementsByTagName("ele").item(0);
-//        if ((node!=null) && (node.getNodeName()=="ele")) {
-//            this.setEle(Double.valueOf(node.toString()));
-//        }
     }
 
     @Override

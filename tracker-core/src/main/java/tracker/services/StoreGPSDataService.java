@@ -1,7 +1,7 @@
 package tracker.services;
 
+import DTO.Point;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class StoreGPSDataService {
 
     private static final BlockingDeque<String> allDataQueue =  new LinkedBlockingDeque<>(100);
+    private static final BlockingDeque<Point> allPointsQueue =  new LinkedBlockingDeque<>(100);
     private static final List<String> allData = new ArrayList<>();
 
     // Локальная переменная для обозначения текущей использованной точки
@@ -38,11 +39,13 @@ public class StoreGPSDataService {
     * Раз в cron.collectData получаем данные из сервиса ГПС, добавляем во внутренний список всех строк
      * Эту же строку передаём в сервис передачи сообщений
      */
-    @Scheduled(cron = "${cron.collectData}")
-    void CollectData () throws InterruptedException {
+    //@Scheduled(cron = "${cron.collectData}")
+    public void collectData () throws InterruptedException {
         // Пока есть, что отдать - берём и добавляем
         while (currentGPSService.haveData()) {
             String s = currentGPSService.giveData();
+            Point point = currentGPSService.givePoint();
+            allPointsQueue.add(point);
             allData.add(s);
             currentPushMessagesService.getDataFromStore(s);
             System.out.println("Добавили точку в хранилище "+count++);

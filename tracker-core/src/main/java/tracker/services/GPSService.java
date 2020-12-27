@@ -1,7 +1,8 @@
 package tracker.services;
 
 import DTO.Point;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -22,6 +23,8 @@ public class GPSService {
 
     // Накапливаемые данные
     private static final BlockingDeque<String> localQueue =  new LinkedBlockingDeque<>(100);
+    private static final BlockingDeque<Point> localPoints =  new LinkedBlockingDeque<>(100);
+    private static final Logger log = LoggerFactory.getLogger(PushMessagesService.class);
 
     public boolean haveData () {
         return !localQueue.isEmpty();
@@ -32,8 +35,8 @@ public class GPSService {
     // Текущая строка в самом файле-ресурсе
     private int current;
 
-    @Scheduled(cron = "${cron.getData}")
-    void getData() throws ParserConfigurationException, IOException, SAXException, ParseException, InterruptedException {
+    //@Scheduled(cron = "${cron.getData}")
+    public void getData() throws ParserConfigurationException, IOException, SAXException, ParseException, InterruptedException {
 
         File fXmlFile = new File(getClass().getResource("/GPSData.xml").getFile());
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -60,13 +63,20 @@ public class GPSService {
             Point point = new Point();
             point.EncodeFromXML(nNode);
             localQueue.put(point.toJson());
-            System.out.println("Взяли точку "+count++);
+            localPoints.put(point);
+
+            log.info("Взяли точку "+count++);
+
             current++;
             return;
         }
     }
 
+
     public String giveData() {
         return localQueue.pollFirst();
+    }
+    public Point givePoint() {
+        return localPoints.pollFirst();
     }
 }
