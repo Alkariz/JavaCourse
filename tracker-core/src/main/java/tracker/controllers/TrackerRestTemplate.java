@@ -7,7 +7,7 @@ import controllers.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +24,6 @@ import java.text.ParseException;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
-@EnableScheduling
 public class TrackerRestTemplate {
 
     // Как я понимаю, счётчик полученных строк-точек
@@ -53,7 +52,7 @@ public class TrackerRestTemplate {
         return point;
     }
 
-    //@Scheduled(cron = "${cron.getData}")
+    @Scheduled(cron = "${cron.getData}")
     public void getData() throws InterruptedException, ParserConfigurationException, SAXException, ParseException, IOException {
         aGPSService.givePoint();
     }
