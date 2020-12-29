@@ -3,7 +3,7 @@ package tracker.controllers;
 import DTO.Point;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import controllers.Response;
+import controllers.ResponseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,64 +43,80 @@ public class TrackerRestTemplate {
     @Autowired
     private GPSService aGPSService;
 
-    //@Scheduled(cron = "${cron.pushData}")
-    @RequestMapping(value = "/qwe", method = RequestMethod.GET)
-    public Point takeThis() throws JsonProcessingException {
-        Point point = pushMessagesService.getLast();
-        restTemplate.postForObject("http://localhost:8080/takeThis", point, Point.class);
-        log.info(point.toJson());
-        return point;
+    @RequestMapping(value = "/getPoint", method = RequestMethod.GET)
+    public Point getPoint() {
+        return pushMessagesService.getLast();
+    }
+
+    @Scheduled(cron = "${cron.pushData}")
+//    @RequestMapping(value = "/qwe", method = RequestMethod.GET)
+    public boolean takeThis() throws JsonProcessingException {
+        boolean result=true;
+        while (pushMessagesService.haveData()) {
+            Point point = pushMessagesService.getLast();
+            if (point == null) {
+                return false;
+            }
+            ResponseMessage response = restTemplate.getForObject("http://localhost:8081/takeResp", ResponseMessage.class);
+//            Point temp = restTemplate.postForObject("http://localhost:8081/takeThis", point, Point.class);
+//            Response response = restTemplate.postForObject("http://localhost:8081/takeThis", point.toJson(), Response.class);
+//            HttpHeaders headers = new HttpHeaders();
+//            HttpEntity<String> entity = new HttpEntity<String>(point.toJson(),headers);
+//            Response response = restTemplate.postForObject("http://localhost:8081/takeThis", entity, Response.class);
+            ResponseMessage responseMessage = restTemplate.postForObject("http://localhost:8081/takeThis", point, ResponseMessage.class);
+            log.info(responseMessage.message);
+//            log.info(point.toJson());
+            result = result && responseMessage.isSuccess();
+        }
+        return result;
     }
 
     @Scheduled(cron = "${cron.getData}")
     public void getData() throws InterruptedException, ParserConfigurationException, SAXException, ParseException, IOException {
-        aGPSService.givePoint();
+        aGPSService.getData();
+//        aGPSService.givePoint();
     }
 
-    //@Scheduled(cron = "${cron.collectData}")
+    @Scheduled(cron = "${cron.collectData}")
     void CollectData () throws InterruptedException {
         storeGPSDataService.collectData();
     }
 
     @RequestMapping(value = "/showLast", method = RequestMethod.GET)
-    public Response showLast(@RequestParam(value="location") String json) throws IOException {
+    public ResponseMessage showLast(@RequestParam(value="location") String json) throws IOException {
         log.info(json);
-        Response response;
+        ResponseMessage responseMessage;
 
         // Пытаемся скушать полученный json
         try {
             ObjectMapper mapper = new ObjectMapper();
             Point dto = mapper.readValue(json, Point.class);
-            response = new Response("ok", true);
+            responseMessage = new ResponseMessage("ok", true);
         } catch (Throwable t) {
-            response = new Response("fail", false);
+            responseMessage = new ResponseMessage("fail", false);
         }
 
-        log.info(response.message);
-        return response;
+        log.info(responseMessage.message);
+        return responseMessage;
     }
 
     @RequestMapping(value = "/coords", method = RequestMethod.GET)
-    public Response setCoords(@RequestParam(value="location") String location){
+    public ResponseMessage setCoords(@RequestParam(value="location") String location){
         log.info(location);
-        Response response;
+        ResponseMessage responseMessage;
         if (location.split(",").length == 2) {
-            response = new Response("ok", true);
+            responseMessage = new ResponseMessage("ok", true);
         } else {
-            response = new Response("fail", false);
+            responseMessage = new ResponseMessage("fail", false);
         }
 
-        return response;
+        return responseMessage;
     }
 
-    @RequestMapping(value = "/getPoint")
-    public DTO.Point getPoint(){
-        DTO.Point point = restTemplate.getForObject(
-                "http://services.groupkt.com/country/get/iso2code/RU", DTO.Point.class);
-        return point;
-    }
+//    @RequestMapping(value = "/getPoint")
+//    public DTO.Point getPoint(){
+//        DTO.Point point = restTemplate.getForObject(
+//                "http://services.groupkt.com/country/get/iso2code/RU", DTO.Point.class);
+//        return point;
+//    }
 }
-
-/*2.1.3 Используйте компонент restTemplate в сервисе отправки координат для выполнения POST запроса,
-        в теле которого будут передаваться координаты по мере их поступления от сервиса GPS.
-        Для выполнения POST-запроса подберите соответствующий метод в классе RestTemplate.*/

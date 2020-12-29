@@ -57,7 +57,7 @@ public class Point {
     // Получить точку из узла XML
     public void EncodeFromXML(Node elem) throws ParseException {
         this.setLat(Double.valueOf(elem.getAttributes().getNamedItem("lat").getNodeValue()));
-        this.setLat(Double.valueOf(elem.getAttributes().getNamedItem("lon").getNodeValue()));
+        this.setLon(Double.valueOf(elem.getAttributes().getNamedItem("lon").getNodeValue()));
         for (int i = 0; i < elem.getChildNodes().getLength(); i++) {
             Node node = elem.getChildNodes().item(i);
             if (node.getNodeName()=="time") {

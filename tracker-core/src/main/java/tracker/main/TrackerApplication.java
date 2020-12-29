@@ -6,8 +6,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
-
 @SpringBootApplication
 public class TrackerApplication {
     public static void main(String... args) {
@@ -18,4 +16,5 @@ public class TrackerApplication {
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
     }
+
 }

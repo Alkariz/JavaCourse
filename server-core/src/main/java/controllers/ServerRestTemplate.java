@@ -19,7 +19,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
-public class PointReciever {
+public class ServerRestTemplate {
 
     private final AtomicLong counter = new AtomicLong();
     private static final Logger log = LoggerFactory.getLogger(ServerApplication.class);
@@ -33,7 +33,7 @@ public class PointReciever {
         String pointS = point.toJson();
         fr.write(pointS);
         fr.write(System.lineSeparator());
-        log.info(pointS);
+        log.info("Добавлена точка" + pointS);
         allPointsQueue.add(point);
     }
 
@@ -44,32 +44,44 @@ public class PointReciever {
         return "done";
     }
 
+    @RequestMapping(value = "takeResp", method = RequestMethod.GET)
+    public ResponseMessage takeResp() {
+        return new ResponseMessage("success", true);
+    }
+
     @RequestMapping(value = "takeThis", method = RequestMethod.POST)
-    public Response takeThis(Point point) {
-        Response response = new Response("success", true);
+    public ResponseMessage takeThis(Point point) {
+        ResponseMessage responseMessage = new ResponseMessage("success", true);
         try {
+//            Point point = restTemplate.getForObject("http://localhost:8083/getPoint", Point.class);
             saveToFile(point);
         }
         catch (IOException e) {
-            response = new Response("failed", false);
+            responseMessage = new ResponseMessage("failed", false);
         }
-        return response;
+        return responseMessage;
     }
-
-    @RequestMapping("/getPoint")
-    public Response getPoint() throws IOException {
-        Response response = new Response("success", true);
-        try {
-            Point point = restTemplate.getForObject("http://localhost:8080/takeThis", Point.class);
-            saveToFile(point);
-        }
-        catch (IOException e) {
-            response = new Response("failed", false);
-        }
-        return response;
-
-    }
-
+//    public Response takeThis(String pointString) {
+//        Response response = new Response("success", true);
+//        try {
+//            ObjectMapper mapper = new ObjectMapper();
+//            Point dto = mapper.readValue(pointString, Point.class);
+//            saveToFile(dto);
+//        }
+//        catch (IOException e) {
+//            response = new Response("failed", false);
+//        }
+//        return response;
+//    }
+//    public Point takeThis(Point point) {
+//        try {
+//            saveToFile(point);
+//        }
+//        catch (IOException e) {
+//            return null;
+//        }
+//        return point;
+//    }
 
 
 }

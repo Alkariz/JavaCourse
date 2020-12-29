@@ -3,7 +3,6 @@ package tracker.services;
 import DTO.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -36,7 +35,7 @@ public class GPSService {
     // Текущая строка в самом файле-ресурсе
     private int current;
 
-    @Scheduled(cron = "${cron.getData}")
+//    @Scheduled(cron = "${cron.getData}")
     public void getData() throws ParserConfigurationException, IOException, SAXException, ParseException, InterruptedException {
 
         File fXmlFile = new File(getClass().getResource("/GPSData.xml").getFile());
@@ -66,13 +65,12 @@ public class GPSService {
             localQueue.put(point.toJson());
             localPoints.put(point);
 
-            log.info("Взяли точку "+count++);
+            log.info("Got Взяли точку "+count++);
 
             current++;
             return;
         }
     }
-
 
     public String giveData() {
         return localQueue.pollFirst();

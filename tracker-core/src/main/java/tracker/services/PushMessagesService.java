@@ -38,7 +38,7 @@ public class PushMessagesService {
     }
 
     // Передаём все данные из очереди на сервер
-    //@Scheduled(cron = "${cron.pushData}")
+//    @Scheduled(cron = "${cron.pushData}")
     void pushData() {
         while (!localQueue.isEmpty()) {
 //            DTO.Point point = restTemplate.getForObject(
@@ -47,9 +47,17 @@ public class PushMessagesService {
 
             String s = localQueue.poll();
 //            restTemplate.postForObject("http://localhost:8080/takeThis", s, Point.class);
-            log.info("Отправили куда-то точку "+count++);
+            log.info("Pushed Отправили куда-то точку "+count++);
 //            String s = localQueue.poll(); // Куда-то отдаём
 //            log.info(s);
         }
+    }
+
+    public void putPoint(Point point) {
+        localPoints.add(point);
+    }
+
+    public boolean haveData() {
+        return !localPoints.isEmpty();
     }
 }

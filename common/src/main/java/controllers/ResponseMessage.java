@@ -1,10 +1,10 @@
 package controllers;
 
-public class Response {
+public class ResponseMessage {
     public String message;
     boolean success;
 
-    public Response(String message, boolean success) {
+    public ResponseMessage(String message, boolean success) {
         this.message = message;
         this.success = success;
     }

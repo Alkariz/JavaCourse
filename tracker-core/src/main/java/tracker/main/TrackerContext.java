@@ -7,6 +7,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import tracker.controllers.TrackerRestTemplate;
 import tracker.services.GPSService;
 import tracker.services.PushMessagesService;
 import tracker.services.StoreGPSDataService;
@@ -43,5 +44,10 @@ public class TrackerContext {
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
+    }
+
+    @Bean
+    public TrackerRestTemplate trackerRestTemplate() {
+        return new TrackerRestTemplate();
     }
 }
