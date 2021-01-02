@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Пример Spring Security</title>
+    </head>
+    <body>
+        <h1>Welcome!</h1>
+        <p>Не кликайте, ничего нет :(</p>
+        <p>Кликните <a th:href="@{/hello}">здесь</a>, для приветствия.</p>
+        <p>Кликните <a th:href="@{/admin}">здесь</a>, если Вы - ROOT.</p>
+        <p>Вру! Есть форма <a th:href="@{/login}">логина</a>!</p>
+    </body>
+</html>
