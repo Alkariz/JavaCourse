@@ -1,5 +1,6 @@
 package tracker.main;
 
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -7,6 +8,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.web.client.RestTemplate;
 import tracker.controllers.TrackerRestTemplate;
 import tracker.services.GPSService;
 import tracker.services.PushMessagesService;
@@ -30,6 +32,11 @@ public class TrackerContext {
     @Bean
     public StoreGPSDataService storeDataService() {
         return new StoreGPSDataService();
+    }
+
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        return builder.build();
     }
 
     @Bean

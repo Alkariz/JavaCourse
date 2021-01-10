@@ -1,6 +1,7 @@
 package tracker.services;
 
 import DTO.Point;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,16 +9,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
 
 
 @Service
 public class StoreGPSDataService {
 
-    private static final BlockingDeque<String> allDataQueue =  new LinkedBlockingDeque<>(100);
-    private static final BlockingDeque<Point> allPointsQueue =  new LinkedBlockingDeque<>(100);
-    private static final List<String> allData = new ArrayList<>();
+//    private static final BlockingDeque<String> allDataQueue =  new LinkedBlockingDeque<>(100);
+    private static final List<Point> allPointsQueue =  new ArrayList<>();
+//    private static final List<String> allData = new ArrayList<>();
     private static final Logger log = LoggerFactory.getLogger(PushMessagesService.class);
 
     // Локальная переменная для обозначения текущей использованной точки
@@ -28,9 +27,9 @@ public class StoreGPSDataService {
      */
     private int lastSentMessageIndex;
 
-    public boolean haveNewData() {
-        return lastSentMessageIndex!=allDataQueue.size();
-    }
+//    public boolean haveNewData() {
+//        return lastSentMessageIndex!=allDataQueue.size();
+//    }
 
     @Autowired
     private GPSService currentGPSService;
@@ -43,16 +42,14 @@ public class StoreGPSDataService {
      * Эту же строку передаём в сервис передачи сообщений
      */
 //    @Scheduled(cron = "${cron.collectData}")
-    public void collectData () throws InterruptedException {
+    public boolean collectData () throws JsonProcessingException {
         // Пока есть, что отдать - берём и добавляем
         while (currentGPSService.haveData()) {
-            String s = currentGPSService.giveData();
             Point point = currentGPSService.givePoint();
             allPointsQueue.add(point);
-            allData.add(s);
-            currentPushMessagesService.getDataFromStore(s);
             currentPushMessagesService.putPoint(point);
-            log.info("Stored Добавили точку в хранилище "+count++);
+            log.info("Добавили точку в хранилище "+count++);
         }
+        return true;
     }
 }

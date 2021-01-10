@@ -1,58 +1,50 @@
 package DTO;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.w3c.dom.Node;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Point {
+public class Point implements Serializable {
 
-    private double lat;
-    private double lon;
-    private long time;
-    private double ele; // Высота
+    private Double lat;
+    private Double lon;
+    private Long time;
+    private Double ele; // Высота
 
-    public double getEle() {
-        return ele;
-    }
-
-    public void setEle(double ele) {
-        this.ele = ele;
-    }
-
-    public double getLat() {
+    public Double getLat() {
         return lat;
     }
 
-    public void setLat(double lat) {
+    public void setLat(Double lat) {
         this.lat = lat;
     }
 
-    public double getLon() {
+    public Double getLon() {
         return lon;
     }
 
-    public void setLon(double lon) {
+    public void setLon(Double lon) {
         this.lon = lon;
     }
 
-    public long getTime() {
+    public Long getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(Long time) {
         this.time = time;
     }
 
-    public String toJson() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(this);
+    public Double getEle() {
+        return ele;
     }
 
-//    public
+    public void setEle(Double ele) {
+        this.ele = ele;
+    }
 
     // Получить точку из узла XML
     public void EncodeFromXML(Node elem) throws ParseException {

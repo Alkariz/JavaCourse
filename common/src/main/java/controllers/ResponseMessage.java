@@ -1,8 +1,13 @@
 package controllers;
 
-public class ResponseMessage {
+import java.io.Serializable;
+
+public class ResponseMessage implements Serializable {
     public String message;
-    boolean success;
+    public Boolean success;
+
+    public ResponseMessage() {
+    }
 
     public ResponseMessage(String message, boolean success) {
         this.message = message;
@@ -17,11 +22,11 @@ public class ResponseMessage {
         this.message = message;
     }
 
-    public boolean isSuccess() {
+    public Boolean isSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success) {
+    public void setSuccess(Boolean success) {
         this.success = success;
     }
 }

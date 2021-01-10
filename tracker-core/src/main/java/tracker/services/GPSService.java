@@ -22,13 +22,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class GPSService {
 
     // Накапливаемые данные
-    private static final BlockingDeque<String> localQueue =  new LinkedBlockingDeque<>(100);
     private static final BlockingDeque<Point> localPoints =  new LinkedBlockingDeque<>(100);
     private static final Logger log = LoggerFactory.getLogger(PushMessagesService.class);
-
-    public boolean haveData () {
-        return !localQueue.isEmpty();
-    }
 
     // Локальная переменная для обозначения текущей использованной точки
     private int count;
@@ -36,22 +31,19 @@ public class GPSService {
     private int current;
 
 //    @Scheduled(cron = "${cron.getData}")
-    public void getData() throws ParserConfigurationException, IOException, SAXException, ParseException, InterruptedException {
+    public boolean getData() throws ParserConfigurationException, IOException, SAXException, ParseException, InterruptedException {
 
         File fXmlFile = new File(getClass().getResource("/GPSData.xml").getFile());
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(fXmlFile);
 
-        //optional, but recommended
-        //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
         doc.getDocumentElement().normalize();
         NodeList nList = doc.getElementsByTagName("trkseg");
         Node parentNode = nList.item(0);
         if (current== parentNode.getChildNodes().getLength()) {
-            return;
+            return false;
         }
-        /*for (int i = current; i < parentNode.getChildNodes().getLength(); i++) */
         while (true) {
             Node nNode = parentNode.getChildNodes().item(current);
             if (!nNode.getNodeName().equals("trkpt")) {
@@ -62,19 +54,19 @@ public class GPSService {
 
             Point point = new Point();
             point.EncodeFromXML(nNode);
-            localQueue.put(point.toJson());
             localPoints.put(point);
 
-            log.info("Got Взяли точку "+count++);
+            log.info("Взяли точку "+count++);
 
             current++;
-            return;
+            return true;
         }
     }
 
-    public String giveData() {
-        return localQueue.pollFirst();
+    public boolean haveData () {
+        return !localPoints.isEmpty();
     }
+
     public Point givePoint() {
         return localPoints.pollFirst();
     }

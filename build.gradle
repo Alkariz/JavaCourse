@@ -4,16 +4,15 @@ subprojects{
         mavenCentral()
         mavenLocal()
     }
-
     dependencies {
-//        compile group: 'org.springframework', name: 'spring-context', version: '4.3.7.RELEASE'
         testCompile group: 'junit', name: 'junit', version: '4.12'
     }
 }
 
+
 project(':common') {
     dependencies{
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.0'
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.1'
     }
 }
 
@@ -22,54 +21,59 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.3.RELEASE")
-    }
-}
-
-project(':server-core') {
-    apply plugin: 'java'
-    apply plugin: 'org.springframework.boot'
-
-    dependencies {
-        compile("org.springframework.boot:spring-boot-starter-thymeleaf")
-        compile("org.springframework.boot:spring-boot-devtools")
-        compile project(':common')
-        testCompile("org.springframework.boot:spring-boot-starter-test")
-    }
-}
-
-project(':server-ui') {
-    apply plugin: 'java'
-    apply plugin: 'org.springframework.boot'
-
-    dependencies {
-        compile("org.springframework.boot:spring-boot-starter-thymeleaf")
-        // tag::security[]
-        compile("org.springframework.boot:spring-boot-starter-security")
-        // end::security[]
-        testCompile("junit:junit")
-        testCompile("org.springframework.boot:spring-boot-starter-test")
-        testCompile("org.springframework.security:spring-security-test")
-    }
-}
-
-project(':tracker-core') {
-    apply plugin: 'java-library-distribution'
-    apply plugin: 'org.springframework.boot'
-
-    dependencies {
-        compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.2'
-
-        compile("org.springframework.boot:spring-boot-starter-thymeleaf")
-        compile("org.springframework.boot:spring-boot-devtools")
-        compile project(':common')
-        testCompile("org.springframework.boot:spring-boot-starter-test")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.3.7.RELEASE")
     }
 }
 
 project(':tracker-ui') {
     dependencies {
         compile project(':common')
+    }
+}
+
+project(':server-core') {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        compile project(':common')
+        testCompile("junit:junit")
+        testCompile("org.springframework.boot:spring-boot-starter-test")
+        testCompile("org.springframework.security:spring-security-test")
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+    }
+}
+
+project(':server-ui') {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        compile project(':common')
+        testCompile("junit:junit")
+        testCompile("org.springframework.boot:spring-boot-starter-test")
+        testCompile("org.springframework.security:spring-security-test")
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+
+        // tag::security[]
+        compile("org.springframework.boot:spring-boot-starter-security")
+        // end::security[]
+    }
+}
+
+project(':tracker-core') {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        compile project(':common')
+        testCompile("junit:junit")
+        testCompile("org.springframework.boot:spring-boot-starter-test")
+        testCompile("org.springframework.security:spring-security-test")
+        implementation 'org.springframework.boot:spring-boot-starter-web'
     }
 }
 

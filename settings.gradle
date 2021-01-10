@@ -4,4 +4,6 @@ include 'server-core'
 include 'server-ui'
 include 'tracker-core'
 include 'tracker-ui'
+include 'new-server-core'
+include '1'
 
