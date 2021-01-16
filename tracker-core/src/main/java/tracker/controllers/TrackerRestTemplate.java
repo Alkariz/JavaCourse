@@ -40,18 +40,12 @@ public class TrackerRestTemplate {
     @Autowired
     private GPSService aGPSService;
 
-    @RequestMapping(value = "/getPoint", method = RequestMethod.GET)
-    public Point getPoint() {
-        Point point = pushMessagesService.getLast();
-        pointsList.add(point);
-        return point;
-    }
-
+    // Для тестирования работы приложения
     @RequestMapping(value = "showPoints", method = RequestMethod.GET)
-    public String showPoints() throws JsonProcessingException {
+    public String showPoints() {
         String s = "Количество точек = " + pointsList.size();
         for (int i = 0; i < pointsList.size(); i++) {
-            s += "<br>" + pointsList.get(i).toString();
+            s += "<br>" + pointsList.get(i).toString() + "</br>";
         }
         return s;
     }
@@ -59,53 +53,26 @@ public class TrackerRestTemplate {
     @Scheduled(cron = "${cron.pushData}")
     public boolean takeThis() {
         boolean result=true;
-        while (pushMessagesService.haveData()) {
+        int currentPointsCount = pushMessagesService.pointsReadyCount();
+        for (int i = 0; i < currentPointsCount; i++) {
             Point point = pushMessagesService.getLast();
             if (point == null) {
                 return false;
             }
-            ResponseMessage response = restTemplate.getForObject("http://localhost:8081/takeResp", ResponseMessage.class);
-
-//            Point temp = restTemplate.postForObject("http://localhost:8081/takeThis", point, Point.class);
-//            Response response = restTemplate.postForObject("http://localhost:8081/takeThis", point.toJson(), Response.class);
-//            HttpHeaders headers = new HttpHeaders();
-//            HttpEntity<String> entity = new HttpEntity<String>(point.toJson(),headers);
-//            Response response = restTemplate.postForObject("http://localhost:8081/takeThis", entity, Response.class);
-
             pointsList.add(point);
             ResponseMessage responseMessage = restTemplate.postForObject("http://localhost:8081/takeThis", point, ResponseMessage.class);
-            log.info(responseMessage.message);
-//            log.info(point.toJson());
             result = result && responseMessage.isSuccess();
         }
         return result;
     }
 
     @Scheduled(cron = "${cron.getData}")
-    public void getData() throws InterruptedException, ParserConfigurationException, SAXException, ParseException, IOException {
-        aGPSService.getData();
+    public boolean getData() throws InterruptedException, ParserConfigurationException, SAXException, ParseException, IOException {
+        return aGPSService.getData();
     }
 
     @Scheduled(cron = "${cron.collectData}")
-    public void CollectData () throws JsonProcessingException {
-        storeGPSDataService.collectData();
+    public boolean collectData () throws JsonProcessingException {
+        return storeGPSDataService.collectData();
     }
-
-    /*@RequestMapping(value = "/showLast", method = RequestMethod.GET)
-    public ResponseMessage showLast(@RequestParam(value="location") String json) throws IOException {
-        log.info(json);
-        ResponseMessage responseMessage;
-
-        // Пытаемся скушать полученный json
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            Point dto = mapper.readValue(json, Point.class);
-            responseMessage = new ResponseMessage("ok", true);
-        } catch (Throwable t) {
-            responseMessage = new ResponseMessage("fail", false);
-        }
-
-        log.info(responseMessage.message);
-        return responseMessage;
-    }*/
 }

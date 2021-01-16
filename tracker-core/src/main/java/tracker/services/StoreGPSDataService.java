@@ -14,22 +14,9 @@ import java.util.List;
 @Service
 public class StoreGPSDataService {
 
-//    private static final BlockingDeque<String> allDataQueue =  new LinkedBlockingDeque<>(100);
     private static final List<Point> allPointsQueue =  new ArrayList<>();
-//    private static final List<String> allData = new ArrayList<>();
     private static final Logger log = LoggerFactory.getLogger(PushMessagesService.class);
 
-    // Локальная переменная для обозначения текущей использованной точки
-    private int count;
-
-    /**
-    * Iндекс последнего отправленного сообщения. Нужен?
-     */
-    private int lastSentMessageIndex;
-
-//    public boolean haveNewData() {
-//        return lastSentMessageIndex!=allDataQueue.size();
-//    }
 
     @Autowired
     private GPSService currentGPSService;
@@ -44,12 +31,15 @@ public class StoreGPSDataService {
 //    @Scheduled(cron = "${cron.collectData}")
     public boolean collectData () throws JsonProcessingException {
         // Пока есть, что отдать - берём и добавляем
-        while (currentGPSService.haveData()) {
+        int localCount=0;
+        int pointsCount=currentGPSService.pointsCount();
+        for (int i = 0; i < pointsCount; i++) {
             Point point = currentGPSService.givePoint();
             allPointsQueue.add(point);
             currentPushMessagesService.putPoint(point);
-            log.info("Добавили точку в хранилище "+count++);
+            log.info("Добавили точку в хранилище "+allPointsQueue.size());
+            localCount++;
         }
-        return true;
+        return localCount>0;
     }
 }

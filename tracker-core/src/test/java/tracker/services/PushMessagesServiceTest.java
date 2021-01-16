@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,17 +34,25 @@ public class PushMessagesServiceTest extends TestCase {
     }
 
     @Test
-    public void testHaveData() {
-        boolean haveData = mockedPushMessagesService.haveData();
-        assertTrue(haveData);
+    public void testPointsReadyCount() throws ParseException {
+        Point point = new Point();
+        point.setLat(42.5);
+        point.setLon(56.33);
+        String s = "2010-08-21T03:23:45.4Z";
+        SimpleDateFormat format = new SimpleDateFormat();
+        format.applyPattern("yyyy-MM-dd'T'HH:mm:ss");
+        Date docDate= format.parse(s);
+        point.setTime(docDate.getTime());
+        mockedPushMessagesService.putPoint(point);
+        int result = mockedPushMessagesService.pointsReadyCount();
+        assertTrue(result>0);
     }
 
     @Test
     public void testGetLast() {
         Point point = mockedPushMessagesService.getLast();
         assertNotNull(point);
-        // Жестокий тест.
-//        assertEquals(null, point);
     }
+
 
 }

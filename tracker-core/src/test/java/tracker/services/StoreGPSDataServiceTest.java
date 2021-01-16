@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -21,11 +21,14 @@ public class StoreGPSDataServiceTest extends TestCase {
     @Mock
     GPSService currentGPSService;
 
+    @Mock
+    PushMessagesService currentPushMessagesService;
+
     @InjectMocks
     StoreGPSDataService mockedStoreGPSDataService;
 
     @Test
-    public void testCollectData() throws InterruptedException, IOException, ParseException {
+    public void testCollectData() throws IOException, ParseException {
         Point point = new Point();
         point.setLat(42.5);
         point.setLon(56.33);
@@ -35,10 +38,9 @@ public class StoreGPSDataServiceTest extends TestCase {
         Date docDate= format.parse(s);
         point.setTime(docDate.getTime());
 
-        String pointS = point.toString();
-        int count = 1;
-        when(currentGPSService.haveData()).thenReturn((count--)==0);
+        when(currentGPSService.pointsCount()).thenReturn(1);
         when(currentGPSService.givePoint()).thenReturn(point);
+        when(currentPushMessagesService.putPoint(point)).thenReturn(1);
         boolean result = mockedStoreGPSDataService.collectData();
         assertTrue(result);
     }

@@ -1,7 +1,6 @@
 package tracker.services;
 
 import DTO.Point;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,23 +16,22 @@ public class PushMessagesService {
     // Накапливаемые данные
     private static final BlockingDeque<Point> localPoints =  new LinkedBlockingDeque<>(100);
 
-
     public Point getLast() {
-        if (haveData()) {
-            return localPoints.poll();
+        if (pointsReadyCount()>0) {
+            return localPoints.pollFirst();
         }
         else {
             return null;
         }
     }
 
-    public int putPoint(Point point) throws JsonProcessingException {
-        localPoints.add(point);
-        log.info(point.toString());
+    public int pointsReadyCount() {
         return localPoints.size();
     }
 
-    public boolean haveData() {
-        return !localPoints.isEmpty();
+    public int putPoint(Point point) {
+        localPoints.add(point);
+        log.info(point.toString());
+        return localPoints.size();
     }
 }

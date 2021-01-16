@@ -70,4 +70,8 @@ public class GPSService {
     public Point givePoint() {
         return localPoints.pollFirst();
     }
+
+    public int pointsCount() {
+        return localPoints.size();
+    }
 }

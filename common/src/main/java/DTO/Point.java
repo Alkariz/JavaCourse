@@ -9,40 +9,40 @@ import java.util.Date;
 
 public class Point implements Serializable {
 
-    private Double lat;
-    private Double lon;
-    private Long time;
-    private Double ele; // Высота
+    private double lat;
+    private double lon;
+    private long time;
+    private double ele; // Высота
 
-    public Double getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(Double lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public Double getLon() {
+    public double getLon() {
         return lon;
     }
 
-    public void setLon(Double lon) {
+    public void setLon(double lon) {
         this.lon = lon;
     }
 
-    public Long getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(Long time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
-    public Double getEle() {
+    public double getEle() {
         return ele;
     }
 
-    public void setEle(Double ele) {
+    public void setEle(double ele) {
         this.ele = ele;
     }
 
@@ -71,7 +71,22 @@ public class Point implements Serializable {
         return "Point{" +
                 "lat=" + lat +
                 ", lon=" + lon +
+                ", ele=" + ele +
+                ", time=" + time +
                 '}';
     }
 
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!obj.getClass().equals(Point.class))
+        {
+            return false;
+        }
+        return (this.hashCode() == obj.hashCode());
+    }
 }

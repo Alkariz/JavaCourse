@@ -9,9 +9,9 @@ subprojects{
     }
 }
 
-
 project(':common') {
     dependencies{
+        testCompile("junit:junit")
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.1'
     }
 }

@@ -27,9 +27,9 @@ public class ServerRestTemplateTest {
 
     @Test
     public void testTakeResp() {
-//        ResponseMessage message = new ServerRestTemplate(new RestTemplate()).takeResp();
-//        System.out.println(message.message);
-//        assertTrue(message.success);
+        ResponseMessage message = new ServerRestTemplate().takeResp();
+        System.out.println(message.message);
+        assertTrue(message.success);
         assertTrue(true);
     }
 
