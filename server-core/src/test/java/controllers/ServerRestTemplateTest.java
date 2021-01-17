@@ -55,4 +55,22 @@ public class ServerRestTemplateTest {
         System.out.println(message);
         assertEquals("done", message);
     }
+
+    @Test
+    public void testShowPoints() throws ParseException {
+        Point point = new Point();
+        point.setLat(42.5);
+        point.setLon(56.33);
+        String s = "2010-08-21T03:23:45.4Z";
+        SimpleDateFormat format = new SimpleDateFormat();
+        format.applyPattern("yyyy-MM-dd'T'HH:mm:ss");
+        Date docDate= format.parse(s);
+        point.setTime(docDate.getTime());
+        point.setEle(103.4);
+
+        serverRestTemplate.takeThis(point);
+        String expected = "Количество точек = 1/r/n" + point.toString();
+        String actual = serverRestTemplate.showPoints();
+        assertEquals(expected, actual);
+    }
 }

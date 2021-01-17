@@ -30,7 +30,7 @@ public class ServerRestTemplate {
     private static final List<Point> allPointsQueue =  new ArrayList<>();
 
     @Scheduled(cron = "${cron.showCount}")
-    public void showCount() {
+    private void showCount() {
         log.info("Количество точек: " + allPointsQueue.size());
     }
 
@@ -68,7 +68,6 @@ public class ServerRestTemplate {
     public ResponseMessage takeThis(@RequestBody Point point) {
         ResponseMessage responseMessage = new ResponseMessage("success", true);
         try {
-//            Point point = restTemplate.getForObject("http://localhost:8083/getPoint", Point.class);
             saveToFile(point);
         }
         catch (IOException e) {
@@ -76,27 +75,4 @@ public class ServerRestTemplate {
         }
         return responseMessage;
     }
-//    public Response takeThis(String pointString) {
-//        Response response = new Response("success", true);
-//        try {
-//            ObjectMapper mapper = new ObjectMapper();
-//            Point dto = mapper.readValue(pointString, Point.class);
-//            saveToFile(dto);
-//        }
-//        catch (IOException e) {
-//            response = new Response("failed", false);
-//        }
-//        return response;
-//    }
-//    public Point takeThis(Point point) {
-//        try {
-//            saveToFile(point);
-//        }
-//        catch (IOException e) {
-//            return null;
-//        }
-//        return point;
-//    }
-
-
 }

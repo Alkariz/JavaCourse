@@ -4,11 +4,15 @@ import DTO.Point;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import controllers.ResponseMessage;
 import junit.framework.TestCase;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestTemplate;
 import org.xml.sax.SAXException;
 import tracker.services.GPSService;
@@ -22,6 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //import org.junit.jupiter.api.Test;
 
@@ -40,9 +47,17 @@ public class TrackerRestTemplateTest extends TestCase {
     @Mock
     RestTemplate restTemplate;
 
+
     @InjectMocks
     TrackerRestTemplate mockedTrackerRestTemplate;
 
+    MockMvc mockMvc;
+    MockMvc mockMvcServer;
+
+    @Before
+    public void setup(){
+        mockMvc = MockMvcBuilders.standaloneSetup(mockedTrackerRestTemplate).build();
+    }
 
     @Test
     public void testGetData() throws InterruptedException, ParserConfigurationException, SAXException, ParseException, IOException {
@@ -82,5 +97,23 @@ public class TrackerRestTemplateTest extends TestCase {
         String exected = "Количество точек = 0";
         String actual = mockedTrackerRestTemplate.showPoints();
         assertEquals(exected, actual);
+    }
+
+    @Test
+    public void testTakeThisIntegration() throws Exception {
+        Point point = new Point();
+        point.setLat(42.5);
+        point.setLon(56.33);
+        String s = "2010-08-21T03:23:45.4Z";
+        SimpleDateFormat format = new SimpleDateFormat();
+        format.applyPattern("yyyy-MM-dd'T'HH:mm:ss");
+        Date docDate= format.parse(s);
+        point.setTime(docDate.getTime());
+        String pointS = point.toString();
+
+        mockMvc.perform(post("http://localhost:8081/takeThis")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(pointS));
     }
 }
