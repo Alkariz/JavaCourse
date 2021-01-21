@@ -5,8 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import controllers.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.xml.sax.SAXException;
@@ -35,16 +33,6 @@ public class TrackerRestTemplate {
 
     @Autowired
     private GPSService aGPSService;
-
-    // Для тестирования работы приложения
-    @RequestMapping(value = "showPoints", method = RequestMethod.GET)
-    public String showPoints() {
-        String s = "Количество точек = " + pointsList.size();
-        for (int i = 0; i < pointsList.size(); i++) {
-            s += "<br>" + pointsList.get(i).toString() + "</br>";
-        }
-        return s;
-    }
 
     @Scheduled(cron = "${cron.pushData}")
     public boolean takeThis() {

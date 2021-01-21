@@ -5,11 +5,9 @@ import main.ServerCoreApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.FileNotFoundException;
@@ -50,9 +48,9 @@ public class ServerRestTemplate {
         return "done";
     }
 
-    @RequestMapping(value = "showPoints", method = RequestMethod.POST)
+    @RequestMapping(value = "showPoints", method = RequestMethod.GET)
     public String showPoints() {
-        AtomicReference<String> s = new AtomicReference<>(new String("Количество точек = " + allPointsQueue.size()));
+        AtomicReference<String> s = new AtomicReference<>(new String("Points count = " + allPointsQueue.size()));
         allPointsQueue.stream().forEach((point) -> {
                 s.set(s + "/r/n" + point.toString());
         });
@@ -64,7 +62,8 @@ public class ServerRestTemplate {
         return new ResponseMessage("success", true);
     }
 
-    @RequestMapping(value = "takeThis", method = RequestMethod.POST)
+    @RequestMapping(value = "takeThis", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
     public ResponseMessage takeThis(@RequestBody Point point) {
         ResponseMessage responseMessage = new ResponseMessage("success", true);
         try {

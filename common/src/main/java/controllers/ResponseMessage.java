@@ -3,8 +3,8 @@ package controllers;
 import java.io.Serializable;
 
 public class ResponseMessage implements Serializable {
-    public String message;
-    public Boolean success;
+    private String message;
+    private Boolean success;
 
     public ResponseMessage() {
     }
@@ -28,5 +28,13 @@ public class ResponseMessage implements Serializable {
 
     public void setSuccess(Boolean success) {
         this.success = success;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseMessage{" +
+                "message=" + message +
+                ", success=" + success +
+                '}';
     }
 }

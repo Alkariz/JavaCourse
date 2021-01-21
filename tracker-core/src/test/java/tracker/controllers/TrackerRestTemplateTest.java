@@ -76,11 +76,4 @@ public class TrackerRestTemplateTest extends TestCase {
         boolean result = mockedTrackerRestTemplate.takeThis();
         assertTrue(result);
     }
-
-    @Test
-    public void testShowPoints() {
-        String exected = "Количество точек = 0";
-        String actual = mockedTrackerRestTemplate.showPoints();
-        assertEquals(exected, actual);
-    }
 }

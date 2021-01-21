@@ -28,9 +28,9 @@ public class ServerRestTemplateTest {
     @Test
     public void testTakeResp() {
         ResponseMessage message = new ServerRestTemplate().takeResp();
-        System.out.println(message.message);
-        assertTrue(message.success);
-        assertTrue(true);
+        System.out.println(message.getMessage());
+        assertEquals("success", message.getMessage());
+        assertTrue(message.isSuccess());
     }
 
     @Test
@@ -46,8 +46,8 @@ public class ServerRestTemplateTest {
 
         point.setEle(103.4);
         ResponseMessage message = serverRestTemplate.takeThis(point);
-        System.out.println(message.message);
-        assertEquals(true, message.success);
+        System.out.println(message.getMessage());
+        assertEquals(true, message.isSuccess());
     }
 
     public void testFirstStart() throws FileNotFoundException {
