@@ -50,10 +50,18 @@ public class ServerRestTemplateTest {
         assertEquals(true, message.isSuccess());
     }
 
+    @Test
     public void testFirstStart() throws FileNotFoundException {
         String message = serverRestTemplate.firstStart();
         System.out.println(message);
         assertEquals("done", message);
+    }
+
+    // Специально ради теста ниже (testShowPoints) был добавлен публичный метод и протестирован здесь
+    @Test
+    public void testClearPoints() {
+        serverRestTemplate.clearPoints();
+        assertTrue(true);
     }
 
     @Test
@@ -69,7 +77,7 @@ public class ServerRestTemplateTest {
         point.setEle(103.4);
 
         serverRestTemplate.takeThis(point);
-        String expected = "Количество точек = 1/r/n" + point.toString();
+        String expected = "Points count = 1/r/n" + point.toString();
         String actual = serverRestTemplate.showPoints();
         assertEquals(expected, actual);
     }

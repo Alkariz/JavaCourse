@@ -33,7 +33,7 @@ public class PointTest {
         expectedPoint.setEle(319.7);
 
         String pointToString = expectedPoint.toString();
-        String expected = "Point{lat=54.105139, lon=54.109707, ele=319.7, time=1282335825000}";
+        String expected = "{lat: 54.105139, lon: 54.109707, ele: 319.7, time: 1282335825000}";
         assertEquals(expected, pointToString);
     }
 

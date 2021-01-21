@@ -68,11 +68,11 @@ public class Point implements Serializable {
 
     @Override
     public String toString() {
-        return "Point{" +
-                "lat=" + lat +
-                ", lon=" + lon +
-                ", ele=" + ele +
-                ", time=" + time +
+        return "{" +
+                "lat: " + lat +
+                ", lon: " + lon +
+                ", ele: " + ele +
+                ", time: " + time +
                 '}';
     }
 

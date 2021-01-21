@@ -1,6 +1,8 @@
 package controllers;
 
 import DTO.Point;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import main.ServerCoreApplication;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = {ServerCoreApplication.class})
 public class ServerRestTemplateIntergationTest {
+    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     @Autowired
     ServerRestTemplate serverRestTemplate = new ServerRestTemplate();
@@ -42,7 +45,6 @@ public class ServerRestTemplateIntergationTest {
 
     @Test
     public void testTakeRespRS() throws Exception {
-        ResponseMessage expected = new ResponseMessage(toString(), true);
         mockMvc.perform(get("http://localhost:8081/takeResp"))
                 .andExpect(jsonPath("message").value("success"))
                 .andExpect(jsonPath("success").value(true));
@@ -61,16 +63,18 @@ public class ServerRestTemplateIntergationTest {
         Date docDate= format.parse(s);
         expectedPoint.setTime(docDate.getTime());
         expectedPoint.setEle(319.7);
-        String ss = expectedPoint.toString();
 
-        mockMvc.perform(post("http://localhost:8081/takeThis").content(ss)
+        mockMvc.perform(post("http://localhost:8081/takeThis")
+                .content(ow.writeValueAsString(expectedPoint))
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("message").value("success"))
                 .andExpect(jsonPath("success").value(true))
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @Test
     public void testFirstStart() throws Exception {
         String expected = "done";
         mockMvc.perform(get("http://localhost:8081/firstStart"))

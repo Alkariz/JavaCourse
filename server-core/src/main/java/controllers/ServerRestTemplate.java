@@ -29,7 +29,7 @@ public class ServerRestTemplate {
 
     @Scheduled(cron = "${cron.showCount}")
     private void showCount() {
-        log.info("Количество точек: " + allPointsQueue.size());
+        log.info("Points count: " + allPointsQueue.size());
     }
 
     private void saveToFile(Point point) throws IOException {
@@ -37,7 +37,7 @@ public class ServerRestTemplate {
         String pointS = point.toString();
         fr.write(pointS);
         fr.write(System.lineSeparator());
-        log.info("Добавлена точка" + pointS);
+        log.info("Added point " + pointS);
         allPointsQueue.add(point);
     }
 
@@ -62,8 +62,11 @@ public class ServerRestTemplate {
         return new ResponseMessage("success", true);
     }
 
+    public void clearPoints() {
+        allPointsQueue.clear();
+    }
+
     @RequestMapping(value = "takeThis", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     public ResponseMessage takeThis(@RequestBody Point point) {
         ResponseMessage responseMessage = new ResponseMessage("success", true);
         try {
