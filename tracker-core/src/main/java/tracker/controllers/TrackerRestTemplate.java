@@ -1,8 +1,10 @@
 package tracker.controllers;
 
-import DTO.Point;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import controllers.ResponseMessage;
+import dto.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +22,8 @@ import java.util.List;
 
 @RestController
 public class TrackerRestTemplate {
-    private static final List<Point> pointsList = new ArrayList<>();
+    private static final List<Point> POINTS_LIST = new ArrayList<>();
+    private static final Logger log = LoggerFactory.getLogger(TrackerRestTemplate.class);
 
     @Autowired
     private RestTemplate restTemplate;
@@ -34,6 +37,9 @@ public class TrackerRestTemplate {
     @Autowired
     private GPSService aGPSService;
 
+    @Autowired
+    private PointService pointService;
+
     @Scheduled(cron = "${cron.pushData}")
     public boolean takeThis() {
         boolean result=true;
@@ -43,7 +49,8 @@ public class TrackerRestTemplate {
             if (point == null) {
                 return false;
             }
-            pointsList.add(point);
+            POINTS_LIST.add(point);
+            pointService.create(point);
             ResponseMessage responseMessage = restTemplate.postForObject("http://localhost:8081/takeThis", point, ResponseMessage.class);
             result = result && responseMessage.isSuccess();
         }

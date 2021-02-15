@@ -1,6 +1,6 @@
 package tracker.services;
 
-import DTO.Point;
+import dto.Point;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class GPSServiceTest extends TestCase {
     @Test
     public void testGivePoint() throws JsonProcessingException {
         Point point = mockedGPSService.givePoint();
-        System.out.println("Точка: "+point.toString());
+        System.out.println("Точка: "+ point.toString());
         assertNotNull(point);
     }
 }

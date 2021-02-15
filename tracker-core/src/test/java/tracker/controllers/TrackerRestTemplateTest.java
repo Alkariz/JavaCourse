@@ -1,6 +1,6 @@
 package tracker.controllers;
 
-import DTO.Point;
+import dto.Point;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import controllers.ResponseMessage;
 import junit.framework.TestCase;

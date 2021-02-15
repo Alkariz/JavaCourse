@@ -1,6 +1,6 @@
 package controllers;
 
-import DTO.Point;
+import dto.Point;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

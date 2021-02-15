@@ -1,6 +1,6 @@
 package controllers;
 
-import DTO.Point;
+import dto.Point;
 import main.ServerCoreApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +27,13 @@ public class ServerRestTemplate {
     private static final Logger log = LoggerFactory.getLogger(ServerCoreApplication.class);
     private static final List<Point> allPointsQueue =  new ArrayList<>();
 
+    @Autowired
+    private PointService pointService;
+
     @Scheduled(cron = "${cron.showCount}")
     private void showCount() {
-        log.info("Points count: " + allPointsQueue.size());
+//        log.info("Points count: " + allPointsQueue.size());
+        pointService.read();
     }
 
     private void saveToFile(Point point) throws IOException {
@@ -57,6 +61,11 @@ public class ServerRestTemplate {
         return s.get();
     }
 
+    @RequestMapping(value = "getLastFewPoints",  method = RequestMethod.GET)
+    public String getLastFewPoints(@RequestParam int PointCount) {
+        return pointService.read(PointCount);
+    }
+
     @RequestMapping(value = "takeResp", method = RequestMethod.GET)
     public ResponseMessage takeResp() {
         return new ResponseMessage("success", true);
@@ -71,6 +80,7 @@ public class ServerRestTemplate {
         ResponseMessage responseMessage = new ResponseMessage("success", true);
         try {
             saveToFile(point);
+            pointService.create(point);
         }
         catch (IOException e) {
             responseMessage = new ResponseMessage("failed", false);

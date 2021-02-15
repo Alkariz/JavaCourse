@@ -1,8 +1,9 @@
 package controllers;
 
-import DTO.Point;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import dao.PointDAO;
+import dto.Point;
 import main.ServerCoreApplication;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,20 +53,20 @@ public class ServerRestTemplateIntergationTest {
 
     @Test
     public void testTakeThis() throws Exception {
-        Point expectedPoint = new Point();
+        PointDAO expectedPointDTO = new PointDAO();
         double lat = 54.105139;
-        expectedPoint.setLat(lat);
+        expectedPointDTO.setLat(lat);
         double lon = 54.109707;
-        expectedPoint.setLon(lon);
+        expectedPointDTO.setLon(lon);
         String s = "2010-08-21T03:23:45.4Z";
         SimpleDateFormat format = new SimpleDateFormat();
         format.applyPattern("yyyy-MM-dd'T'HH:mm:ss");
         Date docDate= format.parse(s);
-        expectedPoint.setTime(docDate.getTime());
-        expectedPoint.setEle(319.7);
+        expectedPointDTO.setTime(docDate.getTime());
+        expectedPointDTO.setEle(319.7);
 
         mockMvc.perform(post("http://localhost:8081/takeThis")
-                .content(ow.writeValueAsString(expectedPoint))
+                .content(ow.writeValueAsString(expectedPointDTO))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

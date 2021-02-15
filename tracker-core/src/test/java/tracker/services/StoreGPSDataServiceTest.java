@@ -1,6 +1,6 @@
 package tracker.services;
 
-import DTO.Point;
+import dto.Point;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;

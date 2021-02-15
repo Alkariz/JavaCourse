@@ -1,4 +1,4 @@
-package DTO;
+package dao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
@@ -22,17 +22,17 @@ public class PointTest {
 
     @Test
     public void testToString() throws ParseException, JsonProcessingException {
-        Point expectedPoint = new Point();
-        expectedPoint.setLat(54.105139);
-        expectedPoint.setLon(54.109707);
+        PointDAO expectedPointDTO = new PointDAO();
+        expectedPointDTO.setLat(54.105139);
+        expectedPointDTO.setLon(54.109707);
         String s = "2010-08-21T03:23:45.4Z";
         SimpleDateFormat format = new SimpleDateFormat();
         format.applyPattern("yyyy-MM-dd'T'HH:mm:ss");
         Date docDate= format.parse(s);
-        expectedPoint.setTime(docDate.getTime());
-        expectedPoint.setEle(319.7);
+        expectedPointDTO.setTime(docDate.getTime());
+        expectedPointDTO.setEle(319.7);
 
-        String pointToString = expectedPoint.toString();
+        String pointToString = expectedPointDTO.toString();
         String expected = "{lat: 54.105139, lon: 54.109707, ele: 319.7, time: 1282335825000}";
         assertEquals(expected, pointToString);
     }
@@ -47,25 +47,25 @@ public class PointTest {
         doc.getDocumentElement().normalize();
         NodeList nList = doc.getElementsByTagName("trkseg");
         Node parentNode = nList.item(0);
-        Point actualPoint = new Point();
+        PointDAO actualPointDTO = new PointDAO();
         for (int i = 0; i < parentNode.getChildNodes().getLength(); i++) {
             Node nNode = parentNode.getChildNodes().item(i);
             if (nNode.getNodeName().equals("trkpt")) {
-                actualPoint.EncodeFromXML(nNode);
+                actualPointDTO.EncodeFromXML(nNode);
                 break;
             }
         }
 
-        Point expectedPoint = new Point();
-        expectedPoint.setLat(54.105139);
-        expectedPoint.setLon(54.109707);
+        PointDAO expectedPointDTO = new PointDAO();
+        expectedPointDTO.setLat(54.105139);
+        expectedPointDTO.setLon(54.109707);
         String s = "2010-08-21T03:23:45.4Z";
         SimpleDateFormat format = new SimpleDateFormat();
         format.applyPattern("yyyy-MM-dd'T'HH:mm:ss");
         Date docDate= format.parse(s);
-        expectedPoint.setTime(docDate.getTime());
-        expectedPoint.setEle(319.7);
+        expectedPointDTO.setTime(docDate.getTime());
+        expectedPointDTO.setEle(319.7);
 
-        assertEquals(expectedPoint, actualPoint);
+        assertEquals(expectedPointDTO, actualPointDTO);
     }
 }

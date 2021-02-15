@@ -1,6 +1,6 @@
 package tracker.services;
 
-import DTO.Point;
+import dto.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class GPSService {
 
     // Накапливаемые данные
-    private static final BlockingDeque<Point> localPoints =  new LinkedBlockingDeque<>(100);
+    private static final BlockingDeque<Point> LOCAL_POINT_DTOS =  new LinkedBlockingDeque<>(100);
     private static final Logger log = LoggerFactory.getLogger(PushMessagesService.class);
 
     // Локальная переменная для обозначения текущей использованной точки
@@ -54,7 +54,7 @@ public class GPSService {
 
             Point point = new Point();
             point.EncodeFromXML(nNode);
-            localPoints.put(point);
+            LOCAL_POINT_DTOS.put(point);
 
             log.info("Взяли точку "+count++);
 
@@ -64,14 +64,14 @@ public class GPSService {
     }
 
     public boolean haveData () {
-        return !localPoints.isEmpty();
+        return !LOCAL_POINT_DTOS.isEmpty();
     }
 
     public Point givePoint() {
-        return localPoints.pollFirst();
+        return LOCAL_POINT_DTOS.pollFirst();
     }
 
     public int pointsCount() {
-        return localPoints.size();
+        return LOCAL_POINT_DTOS.size();
     }
 }

@@ -1,6 +1,6 @@
 package tracker.services;
 
-import DTO.Point;
+import dto.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,11 +14,11 @@ public class PushMessagesService {
     private static final Logger log = LoggerFactory.getLogger(PushMessagesService.class);
 
     // Накапливаемые данные
-    private static final BlockingDeque<Point> localPoints =  new LinkedBlockingDeque<>(100);
+    private static final BlockingDeque<Point> LOCAL_POINT_DTOS =  new LinkedBlockingDeque<>(100);
 
     public Point getLast() {
         if (pointsReadyCount()>0) {
-            return localPoints.pollFirst();
+            return LOCAL_POINT_DTOS.pollFirst();
         }
         else {
             return null;
@@ -26,12 +26,12 @@ public class PushMessagesService {
     }
 
     public int pointsReadyCount() {
-        return localPoints.size();
+        return LOCAL_POINT_DTOS.size();
     }
 
     public int putPoint(Point point) {
-        localPoints.add(point);
+        LOCAL_POINT_DTOS.add(point);
         log.info(point.toString());
-        return localPoints.size();
+        return LOCAL_POINT_DTOS.size();
     }
 }

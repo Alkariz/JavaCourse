@@ -1,4 +1,4 @@
-package DTO;
+package dto;
 
 import org.w3c.dom.Node;
 
@@ -11,7 +11,7 @@ public class Point implements Serializable {
 
     private double lat;
     private double lon;
-    private long time;
+    private long  time;
     private double ele; // Высота
 
     public double getLat() {
